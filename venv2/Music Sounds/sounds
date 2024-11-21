@@ -1,0 +1,8 @@
+import pygame  # This is the music player tool!
+pygame.mixer.init()  # Turn it on!
+
+pygame.mixer.music.load("music/mysong.mp3")  # Point to your toy!
+pygame.mixer.music.play()  # Let’s hear it!
+pygame.mixer.music.stop()  # Turn it off when you're done.
+
+pygame.quit()
