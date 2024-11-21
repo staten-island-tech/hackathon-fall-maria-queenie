@@ -1,8 +1,5 @@
-import pydub
-
 import pygame
 import random
-import time
 
 # Initialize pygame
 pygame.init()
@@ -29,9 +26,42 @@ snake_speed = 15
 font_style = pygame.font.SysFont("bahnschrift", 25)
 score_font = pygame.font.SysFont("comicsansms", 35)
 
-# Music setup
-pygame.mixer.music.load("background_music.mp3")  # Replace with your music file
-pygame.mixer.music.set_volume(0.5)  # Adjust volume (0.0 to 1.0)
+from moviepy.editor import VideoFileClip
+
+def video_to_audio(video_file, audio_file):
+    # Load the video file
+    video = VideoFileClip(video_file)
+
+    # Extract the audio from the video
+    audio = video.audio
+
+    # Write the audio to an mp3 file
+    audio.write_audiofile(audio_file)
+
+    # Close the audio and video objects to free up resources
+    audio.close()
+    video.close()
+
+# Example usage:
+video_file = "your_video.mp4"  # Replace with your video file
+audio_file = "output_audio.mp3"  # Output audio file name
+video_to_audio(video_file, audio_file)
+
+# Music and Sound Effects setup (use dictionary)
+music_dict = {
+    "background": "background_music.mp3",  # Replace with your background music file
+    "eat": "eat_sound.wav",                # Sound for eating food
+    "game_over": "game_over_sound.wav",    # Sound for game over
+}
+
+# Load music files into the dictionary
+try:
+    pygame.mixer.music.load(music_dict["background"])  # Background music
+    pygame.mixer.music.set_volume(0.5)  # Adjust volume (0.0 to 1.0)
+    eat_sound = pygame.mixer.Sound(music_dict["eat"])  # Eat sound effect
+    game_over_sound = pygame.mixer.Sound(music_dict["game_over"])  # Game over sound effect
+except pygame.error:
+    print("Music or sound effect file not found!")
 
 # Function to display the score
 def your_score(score):
@@ -69,7 +99,7 @@ def gameLoop():
     foodx = round(random.randrange(0, width - snake_block) / 10.0) * 10.0
     foody = round(random.randrange(0, height - snake_block) / 10.0) * 10.0
 
-    pygame.mixer.music.play(-1, 0.0)  # Start playing music in a loop
+    pygame.mixer.music.play(-1, 0.0)  # Start playing background music in a loop
 
     while not game_over:
 
@@ -78,6 +108,9 @@ def gameLoop():
             message("You Lost! Press Q-Quit or C-Play Again", red)
             your_score(Length_of_snake - 1)
             pygame.display.update()
+
+            # Play the game over sound effect
+            pygame.mixer.Sound.play(game_over_sound)
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
@@ -131,6 +164,9 @@ def gameLoop():
             foodx = round(random.randrange(0, width - snake_block) / 10.0) * 10.0
             foody = round(random.randrange(0, height - snake_block) / 10.0) * 10.0
             Length_of_snake += 1
+
+            # Play the eating sound effect
+            pygame.mixer.Sound.play(eat_sound)
 
         clock.tick(snake_speed)
 
