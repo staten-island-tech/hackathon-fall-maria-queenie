@@ -52,6 +52,17 @@ def play_music(music_file):
     pygame.mixer.music.load(music_file)
     pygame.mixer.music.play(-1, 0.0)  # Loop indefinitely
 
+# Function to randomly select a music file from a list
+def random_music():
+    music_list = [
+        "bensound-angelsbymyside.mp3",  # Make sure the files exist
+        "bensound-curiouschild.mp3",
+        "bensound-laststop.mp3",
+        "bensound-movingwayup.mp3",
+        "bensound-nordicshamanic.mp3"
+    ]
+    return random.choice(music_list)
+
 # Main game loop
 def gameLoop():
     game_over = False
@@ -71,8 +82,8 @@ def gameLoop():
     foodx = round(random.randrange(0, window_width - snake_block) / 10.0) * 10.0
     foody = round(random.randrange(0, window_height - snake_block) / 10.0) * 10.0
 
-    # Play background music when the game starts
-    play_music("bensound-angelsbymyside.mp3")  # Make sure this file is in the same directory as the script
+    # Play random background music when the game starts
+    play_music(random_music())  # Play random music at the beginning
 
     while not game_over:
 
@@ -89,7 +100,7 @@ def gameLoop():
                         game_over = True
                         game_close = False
                     if event.key == pygame.K_c:
-                        gameLoop()
+                        return  # Restart the game
 
         # Event handling
         for event in pygame.event.get():
@@ -145,9 +156,9 @@ def gameLoop():
             foody = round(random.randrange(0, window_height - snake_block) / 10.0) * 10.0
             Length_of_snake += 1
 
-            # Play different music when the snake eats the apple
-            pygame.mixer.music.stop()  # Stop the current background music
-            play_music("bensound-curiouschild.mp3")  # Make sure this file is in the same directory as the script
+            # Play a random music track when the snake eats the food
+            pygame.mixer.music.stop()  # Stop the current music
+            play_music(random_music())  # Play random music
 
         # Set the game speed
         clock.tick(snake_speed)
@@ -157,3 +168,4 @@ def gameLoop():
 
 # Start the game loop
 gameLoop()
+
